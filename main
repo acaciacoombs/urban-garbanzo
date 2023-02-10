@@ -1,0 +1,17 @@
+def main():
+	NPC_name = placeholder
+	print(f"Hi! Welcome to Friendship Simulator. Here are all the prompts that you can use when interacting with items, rooms, and NPC's!\nPROMPTS:\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\nq = quit")
+
+	player_name = input(f'''{NPC_name} looks at you, speaking. "Uh, what's your name?"''')
+	player_input = input(f"Oh cool, hi {player_name}. I just walked into this stupid abandoned building and I guess I was bored enough to explore, but I think it's just a normal building. Lameee. ")
+	
+
+	
+	print(f"Main: You enter a large, nearly empty living room. {NPC_name} stands by the couch, looking ambivalent.")
+	print(f"West: You enter a pristine, yet small kitchen. There is a lone can of soda sitting on the counter.")
+	print(f"North: You enter a study full of thousands of bookshelves. You notice that one of the books is laying on a desk.")
+	#if the player tries to move up, trigger the puzzle. once the puzzle is solved once the player will not have to solve it again.
+	print(f"East: You finally push the heavy door open and see a room filled with computers and other electronics. One of the electronics that you notice appears to be a lost phone.")
+	print(f"South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes.")
+	print(f"Upper: You ascend the staircase and see a messy bedroom filled with junk. On the bed, you see a pair of headphones.")
+	print(f"Lower: You descend the staircase to a tidy bedroom. An open closet shows a beautiful blue dress.")
