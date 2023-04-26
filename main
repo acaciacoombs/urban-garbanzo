@@ -1,17 +1,71 @@
+prompts = "PROMPTS:\np = view prompts\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\nt = talk to NPC\np = pick up item\ni = view inventory\nr = remove from inventory\nq = quit\n"
+room = "main"
+inventory = []
 def main():
-	NPC_name = placeholder
-	print(f"Hi! Welcome to Friendship Simulator. Here are all the prompts that you can use when interacting with items, rooms, and NPC's!\nPROMPTS:\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\nq = quit")
-
-	player_name = input(f'''{NPC_name} looks at you, speaking. "Uh, what's your name?"''')
-	player_input = input(f"Oh cool, hi {player_name}. I just walked into this stupid abandoned building and I guess I was bored enough to explore, but I think it's just a normal building. Lameee. ")
+	NPC_expression = 'ambivalent'
+	Friendship_points = 1
+	player_input = ''
+	print(f"Hi! Welcome to Friendship Simulator. Here are all the prompts that you can use when interacting with items, rooms, and NPC's!\nPROMPTS:\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\np = pick up item\ni = view inventory\nq = quit\n")
 	
+	while player_input != 'q':
+		if player_input == '':
+			NPC_choice = input(f"Please pick an NPC to befriend. 'Social Butterfly',(SB), 'Curious Creative',(CC), or 'Loner Analyst', (LA).\n")
+			NPC_choice = NPC_choice.lower()
+			if NPC_choice == 'sb':
+				NPC_name = 'Stella'
+			elif NPC_choice == 'cc':
+				NPC_name = 'Quinn'
+			elif NPC_choice == 'la':
+				NPC_name = 'Liam'
+			else:
+				print(f"'{NPC_choice}' isn't a valid choice.")
 
+			if NPC_name == 'Stella':
+				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking. "Oh my goodness hi! what's your name? I'm Stella!"\n''')
+				one_friendship_talk = f'''"Hi {player_name}! I just walked into this stupid abandoned building and I guess I was bored enough to explore, but it's pretty boring. I even lost my phone in one of the rooms!!!"\n'''
+				two_friendship_talk = f'''"HEY {player_name}!!! Thanks so much for the gift! Do you know if there is anything to drink around here? I'm thirsty and I want to make a toast to our new friendship!. Thanks soooo much!"'''
+
+			if NPC_name == 'Quinn':
+				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking. "Oh. Hi there! Nice to meet you. What's your name? I'm Quinn."\n''')
+				one_friendship_talk = f'''"What's up {player_name}? This abandoned building isn't much, but it's full of cool art! I hope I can find something new to paint with."\n'''
+				two_friendship_talk = f'''"How's it going {player_name}?! These paintbrushes are the best! Thanks for the gift my dude! Now if only I could find something to give my super girly little sister. Maybe there is something in the house!"'''
+
+			if NPC_name == 'Liam':
+				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking."Oh, uh, hi. Who are you?"\n''')
+				one_friendship_talk = f'''"Oh. Hi {player_name}. I was just looking for some stuff to use to build my computer. If you find any and you don't want it, maybe you could give it to me. Or not. Doesn't matter."\n'''
+				two_friendship_talk = f'''"Hey {player_name}. I'm looking for a screwdriver. My dad doesn't allow me near his tools anymore and I need one to assemble my new computer. Appreciate it, dude... Ew why did I just say dude."'''
+
+			print(f"{one_friendship_talk}")
 	
-	print(f"Main: You enter a large, nearly empty living room. {NPC_name} stands by the couch, looking ambivalent.")
-	print(f"West: You enter a pristine, yet small kitchen. There is a lone can of soda sitting on the counter.")
-	print(f"North: You enter a study full of thousands of bookshelves. You notice that one of the books is laying on a desk.")
-	#if the player tries to move up, trigger the puzzle. once the puzzle is solved once the player will not have to solve it again.
-	print(f"East: You finally push the heavy door open and see a room filled with computers and other electronics. One of the electronics that you notice appears to be a lost phone.")
-	print(f"South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes.")
-	print(f"Upper: You ascend the staircase and see a messy bedroom filled with junk. On the bed, you see a pair of headphones.")
-	print(f"Lower: You descend the staircase to a tidy bedroom. An open closet shows a beautiful blue dress.")
+		player_input = input("What now? (use 'p' to see prompts)\n")
+		if player_input.lower() == 'p':
+			print(f"\n{prompts}")
+		
+		if player_input.lower() == 't':
+			if Friendship_points == 1:
+				print(f"{one_friendship_talk}")
+			if Friendship_points == 2:
+				print(f"{two_friendship_talk}")
+
+		if Friendship_points < 0:
+			you_loser()
+
+def you_loser():
+	print("You lose! Wow, you're bad at making friends...")
+	player_input = 'q'
+		
+
+
+
+#print(f"Main: You enter a large, nearly empty living room. {NPC_name} stands by the couch, looking {NPC_expression}.")
+#print(f"West: You enter a pristine, yet small kitchen.")
+#print(f"North: You enter a study full of thousands of bookshelves. You notice that a lost phone is laying on a desk.")
+#if the player tries to move up, trigger the puzzle. once the puzzle is solved once the player will not have to solve it again.
+#print(f"East: You finally push the heavy door open and see a room filled with computers and other electronics. One of the electronics that you notice appears to be open, a circuit board poking out.")
+#print(f"South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes.")
+#print(f"Upper: You ascend the staircase and see a messy bedroom filled with junk.")
+#print(f"Lower: You descend the staircase to a tidy bedroom.")
+
+
+if __name__ == "__main__":
+	main()
