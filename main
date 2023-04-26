@@ -22,26 +22,38 @@ def main():
 
 			if NPC_name == 'Stella':
 				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking. "Oh my goodness hi! what's your name? I'm Stella!"\n''')
+				zero_friendship_talk = f'''"... Oh hi {player_name}. What's up. Did you find my phone yet? I can't add your number if you haven't."'''
 				one_friendship_talk = f'''"Hi {player_name}! I just walked into this stupid abandoned building and I guess I was bored enough to explore, but it's pretty boring. I even lost my phone in one of the rooms!!!"\n'''
 				two_friendship_talk = f'''"HEY {player_name}!!! Thanks so much for the gift! Do you know if there is anything to drink around here? I'm thirsty and I want to make a toast to our new friendship!. Thanks soooo much!"'''
 
 			if NPC_name == 'Quinn':
 				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking. "Oh. Hi there! Nice to meet you. What's your name? I'm Quinn."\n''')
+				zero_friendship_talk = f'''"Hey there. I guess you didn't hear me before but I'm looking for a paintbrush. PAINTBRUSH. I don't want anything else until I have a paintbrush"'''
 				one_friendship_talk = f'''"What's up {player_name}? This abandoned building isn't much, but it's full of cool art! I hope I can find something new to paint with."\n'''
 				two_friendship_talk = f'''"How's it going {player_name}?! These paintbrushes are the best! Thanks for the gift my dude! Now if only I could find something to give my super girly little sister. Maybe there is something in the house!"'''
 
 			if NPC_name == 'Liam':
 				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking."Oh, uh, hi. Who are you?"\n''')
+				zero_friendship_talk =f'''"... Hi {player_name}. Don't give me anything unless it can be used for my computer. Thanks..."'''
 				one_friendship_talk = f'''"Oh. Hi {player_name}. I was just looking for some stuff to use to build my computer. If you find any and you don't want it, maybe you could give it to me. Or not. Doesn't matter."\n'''
 				two_friendship_talk = f'''"Hey {player_name}. I'm looking for a screwdriver. My dad doesn't allow me near his tools anymore and I need one to assemble my new computer. Appreciate it, dude... Ew why did I just say dude."'''
 
 			print(f"{one_friendship_talk}")
+
+		if Friendship_points == 0:
+			NPC_expression = 'frustrated'
+		if Friendship_points == 1:
+			NPC_expression = 'ambivalent'
+		if Friendship_points = 2:
+			NPC_expression = 'happy'
 	
 		player_input = input("What now? (use 'p' to see prompts)\n")
 		if player_input.lower() == 'p':
 			print(f"\n{prompts}")
 		
 		if player_input.lower() == 't':
+			if Friendship_points == 0:
+				print(f"{zero_friendship_talk}")
 			if Friendship_points == 1:
 				print(f"{one_friendship_talk}")
 			if Friendship_points == 2:
