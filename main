@@ -78,6 +78,7 @@ def main():
 					print(f"{two_friendship_talk}")
 			else:
 				print("Sorry, there is no one to talk to in this room.")
+				print(f"\n{prompts}")
 
 		if player_input.lower() == 'p':
 			player_input = ("Would you like to pick up the item in this room? (Answer 'y' or 'n')")
@@ -100,6 +101,68 @@ def main():
 		
 		if player_input.lower() == 'i':
 			print(player.inventory)
+		
+		if player_input.lower() == 'v':
+			if len(Room.viewables) > 0:
+				player_input = (f"Would you like to view {Room.viewables[0]}? (y or n)\n")
+				if player_input.lower() == "y":
+					if "computer" in Room.viewables:
+						player_input = input("On the computer, a riddle is displayed. It reads as follows:\nWhat is at the beginning of end and is also at the end of time?\n")
+						if player_input.lower() != 'e':
+							player_input = input("Hint: look closely at the words 'time' and 'end'.\n")
+							if player_input.lower() != 'e':
+								print("I'm out of hints! The answer was e")
+								print("You've recieved the kitchen key in your inventory!")
+								player.inventory.append("kitchen key")
+								Room.viewables.remove("computer")
+							else:
+								print("You've solved the riddle! You've recieved the kitchen key in your inventory!")
+								player.inventory.append("kitchen key")
+								Room.viewables.remove("computer")
+						else:
+							print("You've solved the riddle! You've recieved the kitchen key in your inventory!")
+							player.inventory.append("kitchen key")
+							Room.viewables.remove("computer")
+
+					elif "painting" in Room.viewables:
+						player_input = input("There is a riddle painted on the canvas. It reads as follows:\nYou feed me, I grow stronger, and when I drink, I die. What am I?\n")
+						if player_input.lower() != "fire":
+							player_input = input("Hint: I am the opposite of water.")
+							if player_input.lower() != "fire":
+								print("I'm out of hints! The answer was fire.")
+								print("You've recieved the downstairs bedroom key in your inventory!")
+								player.inventory.append("downstairs bedroom key")
+								Room.viewables.remove("painting")
+							else:
+								print("You've solved the riddle! You've recieved the downstairs bedroom key in your inventory!")
+								player.inventory.append("downstairs bedroom key")
+								Room.viewables.remove("painting")
+						else:
+							print("You've solved the riddle! You've recieved the downstairs bedroom key in your inventory!")
+							player.inventory.append("downstairs bedroom key")
+							Room.viewables.remove("painting")
+
+					elif "bookshelf" in Room.viewables:
+						player_input = input("You grab the book and open it, inside there is a riddle. It reads as follows:\nHow many months of the year have 28 days?")
+						if player_input != '12':
+							player_input = input("Hint: 30 > 28")
+							if player_input != '12':
+								print("I'm out of hints! The answer was 12.")
+								print("You've recieved the upstairs bedroom key in your inventory!")
+								player.inventory.append("upstairs bedroom key")
+								Room.viewables.remove("bookshelf")
+							else:
+								print("You've solved the riddle! You've recieved the upstairs bedrrom key in your inventory!")
+								player.inventory.append("upstairs bedroom key")
+								Room.viewables.remove("bookshelf")
+						else:
+							print("You've solved the riddle! You've recieved the upstairs bedrrom key in your inventory!")
+							player.inventory.append("upstairs bedroom key")
+							Room.viewables.remove("bookshelf")
+				else:
+					print(f"What now?\n{prompts}")
+			else:
+				print(f"There is nothing here left to view.\n{prompts}")
 
 		if player_input.lower() == 'g':
 			if player.position == [(0,0,0)]:
@@ -120,19 +183,25 @@ def main():
 
 		if Friendship_points < 0:
 			you_loser()
-
+		if Friendship_points > 2
+			if NPC_name == "Stella":
+				print("OMG thank you so much! You're my best friend! Let's hang out again later!")
+			if NPC_name == "Liam":
+				print("I don't know how to thank you enough. You're defintely my best friend, I'll see you around sometime.")
+			if NPC_name == "Quinn":
+				print("WOW! You're amazing. Thanks dude! I'll need to get you some gifts next time we see each other!")
+			you_winner()
 
 
 
 def you_loser():
 	print("You lose! Wow, you're bad at making friends...")
 	player_input = 'q'
+
+def you_winner():
+	print("You won! You're great at making friends!")
+	print("CREDITS:\nProgrammer: Acacia Coombs\n Developer: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
 		
-
-
-#print(f"Upper: You ascend the staircase and see a messy bedroom filled with junk. In an open drawer full of tools, you see a screwdriver.")
-#print(f"Lower: You descend the staircase to a tidy bedroom. There is a doll on the bed.")
-
 
 if __name__ == "__main__":
 	main()
