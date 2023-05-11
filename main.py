@@ -1,7 +1,10 @@
-from Rooms.py import rooms, MOVEMENTS
+from Rooms import rooms, MOVEMENT
+import pickle
+from numpy import array
 
-prompts = "PROMPTS:\np = view prompts\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\nt = talk to NPC\ng = gift item to NPC\np = pick up item\ni = view inventory\nr = remove from inventory\nv = view\nq = quit\n"
+prompts = "PROMPTS:\np = view prompts\nm = move\nt = talk to NPC\ng = gift item to NPC\np = pick up item\ni = view inventory\nr = remove from inventory\nv = view\nq = quit\n"
 NPC_name = ''
+
 class Player():
 	def __init__(self):
 		self.__position = (0, 0, 0)
@@ -15,13 +18,14 @@ class Player():
 
 player = Player()
 
-def main():
+def main(player):
 	NPC_expression = 'ambivalent'
 	Friendship_points = 1
 	player_input = ''
 	print(f"Hi! Welcome to Friendship Simulator. Here are all the prompts that you can use when interacting with items, rooms, and NPC's!\nPROMPTS:\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\np = pick up item\ni = view inventory\nq = quit\n")
 	
 	while player_input != 'q':
+		room = rooms.get(player.position, "Something broke, please quit")
 		if player_input == '':
 			NPC_choice = input(f"Please pick an NPC to befriend. 'Social Butterfly',(SB), 'Curious Creative',(CC), or 'Loner Analyst', (LA).\n")
 			NPC_choice = NPC_choice.lower()
@@ -69,7 +73,7 @@ def main():
 			print(f"\n{prompts}")
 		
 		if player_input.lower() == 't':
-			if room_name == "main":
+			if player.position == [(0,0,0)]:
 				if Friendship_points == 0:
 					print(f"{zero_friendship_talk}")
 				elif Friendship_points == 1:
@@ -88,25 +92,24 @@ def main():
 				print(f"\n{prompts}")
 
 		if player_input.lower() == 'n':
-			movement(self,player)
-			movement(self,player)
+			room.movement(player)
 		if player_input.lower() == 'e':
-			movement(self,player)
+			room.movement(player)
 		if player_input.lower() == 'w':
-			movement(self,player)
+			room.movement(player)
 		if player_input.lower() == 'u':
-			movement(self,player)
+			room.movement(player)
 		if player_input.lower() == 'd':
-			movement(self,player)
+			room.movement(player)
 		
 		if player_input.lower() == 'i':
 			print(player.inventory)
 		
 		if player_input.lower() == 'v':
-			if len(Room.viewables) > 0:
-				player_input = (f"Would you like to view {Room.viewables[0]}? (y or n)\n")
+			if len(room.viewables) > 0:
+				player_input = (f"Would you like to view {room.viewables[0]}? (y or n)\n")
 				if player_input.lower() == "y":
-					if "computer" in Room.viewables:
+					if "computer" in room.viewables:
 						player_input = input("On the computer, a riddle is displayed. It reads as follows:\nWhat is at the beginning of end and is also at the end of time?\n")
 						if player_input.lower() != 'e':
 							player_input = input("Hint: look closely at the words 'time' and 'end'.\n")
@@ -114,17 +117,17 @@ def main():
 								print("I'm out of hints! The answer was e")
 								print("You've recieved the kitchen key in your inventory!")
 								player.inventory.append("kitchen key")
-								Room.viewables.remove("computer")
+								room.viewables.remove("computer")
 							else:
 								print("You've solved the riddle! You've recieved the kitchen key in your inventory!")
 								player.inventory.append("kitchen key")
-								Room.viewables.remove("computer")
+								room.viewables.remove("computer")
 						else:
 							print("You've solved the riddle! You've recieved the kitchen key in your inventory!")
 							player.inventory.append("kitchen key")
-							Room.viewables.remove("computer")
+							room.viewables.remove("computer")
 
-					elif "painting" in Room.viewables:
+					elif "painting" in room.viewables:
 						player_input = input("There is a riddle painted on the canvas. It reads as follows:\nYou feed me, I grow stronger, and when I drink, I die. What am I?\n")
 						if player_input.lower() != "fire":
 							player_input = input("Hint: I am the opposite of water.")
@@ -132,17 +135,17 @@ def main():
 								print("I'm out of hints! The answer was fire.")
 								print("You've recieved the downstairs bedroom key in your inventory!")
 								player.inventory.append("downstairs bedroom key")
-								Room.viewables.remove("painting")
+								room.viewables.remove("painting")
 							else:
 								print("You've solved the riddle! You've recieved the downstairs bedroom key in your inventory!")
 								player.inventory.append("downstairs bedroom key")
-								Room.viewables.remove("painting")
+								room.viewables.remove("painting")
 						else:
 							print("You've solved the riddle! You've recieved the downstairs bedroom key in your inventory!")
 							player.inventory.append("downstairs bedroom key")
-							Room.viewables.remove("painting")
+							room.viewables.remove("painting")
 
-					elif "bookshelf" in Room.viewables:
+					elif "bookshelf" in room.viewables:
 						player_input = input("You grab the book and open it, inside there is a riddle. It reads as follows:\nHow many months of the year have 28 days?")
 						if player_input != '12':
 							player_input = input("Hint: 30 > 28")
@@ -150,15 +153,15 @@ def main():
 								print("I'm out of hints! The answer was 12.")
 								print("You've recieved the upstairs bedroom key in your inventory!")
 								player.inventory.append("upstairs bedroom key")
-								Room.viewables.remove("bookshelf")
+								room.viewables.remove("bookshelf")
 							else:
 								print("You've solved the riddle! You've recieved the upstairs bedrrom key in your inventory!")
 								player.inventory.append("upstairs bedroom key")
-								Room.viewables.remove("bookshelf")
+								room.viewables.remove("bookshelf")
 						else:
 							print("You've solved the riddle! You've recieved the upstairs bedrrom key in your inventory!")
 							player.inventory.append("upstairs bedroom key")
-							Room.viewables.remove("bookshelf")
+							room.viewables.remove("bookshelf")
 				else:
 					print(f"What now?\n{prompts}")
 			else:
@@ -183,7 +186,7 @@ def main():
 
 		if Friendship_points < 0:
 			you_loser()
-		if Friendship_points > 2
+		if Friendship_points > 2:
 			if NPC_name == "Stella":
 				print("OMG thank you so much! You're my best friend! Let's hang out again later!")
 			if NPC_name == "Liam":
@@ -203,5 +206,5 @@ def you_winner():
 	print("CREDITS:\nProgrammer: Acacia Coombs\n Developer: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
 		
 
-if __name__ == "__main__":
+if __name__ == "__main.py__":
 	main()
