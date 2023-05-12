@@ -1,9 +1,12 @@
-from Rooms import rooms, MOVEMENT
+from Rooms import rooms, MOVEMENT, main_room, north_room, south_room
 import pickle
 from numpy import array
 
-prompts = "PROMPTS:\np = view prompts\nm = move\nt = talk to NPC\ng = gift item to NPC\np = pick up item\ni = view inventory\nr = remove from inventory\nv = view\nq = quit\n"
+prompts = "PROMPTS:\np = view prompts\nm = move\nf = look at friendship points\nt = talk to NPC\ng = gift item to NPC\nz = pick up item\ni = view inventory\nr = remove from inventory\nv = view\nq = quit\ns = save\nl = load"
 NPC_name = ''
+Friendship_points = 1
+player_input = ''
+
 
 class Player():
 	def __init__(self):
@@ -18,26 +21,29 @@ class Player():
 
 player = Player()
 
-def main(player):
-	NPC_expression = 'ambivalent'
+def main():
 	Friendship_points = 1
 	player_input = ''
-	print(f"Hi! Welcome to Friendship Simulator. Here are all the prompts that you can use when interacting with items, rooms, and NPC's!\nPROMPTS:\nn = move north\ne = move east\ns = move south\nw = move west\nu = move up\nd = move down\np = pick up item\ni = view inventory\nq = quit\n")
+	print(f"Hi! Welcome to Friendship Simulator. You win if you get 3 friendship points with the NPC, but you lose if your friendship points go below 0. You start out with 1 friendship point. Good luck!")
 	
 	while player_input != 'q':
 		room = rooms.get(player.position, "Something broke, please quit")
 		if player_input == '':
-			NPC_choice = input(f"Please pick an NPC to befriend. 'Social Butterfly',(SB), 'Curious Creative',(CC), or 'Loner Analyst', (LA).\n")
-			NPC_choice = NPC_choice.lower()
-			if NPC_choice == 'sb':
-				NPC_name = 'Stella'
-			elif NPC_choice == 'cc':
-				NPC_name = 'Quinn'
-			elif NPC_choice == 'la':
-				NPC_name = 'Liam'
-			else:
-				print(f"'{NPC_choice}' isn't a valid choice.")
-				NPC_choice = input(f"Please pick an NPC to befriend. 'Social Butterfly',(SB), 'Curious Creative',(CC), or 'Loner Analyst', (LA).\n")
+			NPC_validity = False
+			while NPC_validity == False:
+				NPC_choice = input(f"Please pick an NPC to befriend. 'Social Butterfly', (SB), 'Curious Creative', (CC), or 'Loner Analyst', (LA).\n")
+				NPC_choice = NPC_choice.lower()
+				if NPC_choice == 'sb':
+					NPC_name = 'Stella'
+					NPC_validity = True
+				elif NPC_choice == 'cc':
+					NPC_name = 'Quinn'
+					NPC_validity = True
+				elif NPC_choice == 'la':
+					NPC_name = 'Liam'
+					NPC_validity = True
+				else:
+					print(f"'{NPC_choice}' isn't a valid choice.")
 
 			if NPC_name == 'Stella':
 				player_name = input(f'''You walk into an abandoned building. In the center room of the building, you see someone. The person looks at you, speaking. "Oh my goodness hi! what's your name? I'm Stella!"\n''')
@@ -60,20 +66,37 @@ def main(player):
 				two_friendship_talk = f'''"Hey {player_name}. I'm looking for a screwdriver. My dad doesn't allow me near his tools anymore and I need one to assemble my new computer. Appreciate it, dude... Ew why did I just say dude."'''
 				liked_items = ['circuitboard', 'screwdriver']
 			print(f"{one_friendship_talk}")
-
-		if Friendship_points == 0:
-			NPC_expression = 'frustrated'
-		if Friendship_points == 1:
-			NPC_expression = 'ambivalent'
-		if Friendship_points == 2:
-			NPC_expression = 'happy'
 	
+		if room == main_room:
+			if "kitchen key" in player.inventory:
+				player_input = input("Would you like to unlock the kitchen door? (y or n)\n")
+				if player_input.lower() == 'y':
+					player.inventory.remove("kitchen key")
+					room.kitchen()
+				else:
+					player_input = input("What now? (use 'p' to see prompts)\n")
+		
+		if room == north_room:
+			if "upstairs bedroom key" in player.inventory:
+				player_input = input("Would you like to unlock the upstairs bedroom door? (y or n)\n")
+				if player_input.lower() == 'y':
+					player.inventory.remove("upstairs bedroom key")
+					room.upperroom()
+
+		if room == south_room:
+			if "downstairs bedroom key" in player.inventory:
+				player_input = input("Would you like to unlock the downstairs bedroom door? (y or n)\n")
+				if player_input.lower() == 'y':
+					player.inventory.remove("downstairs bedroom key")
+					room.lowerroom()
+
+
 		player_input = input("What now? (use 'p' to see prompts)\n")
 		if player_input.lower() == 'p':
 			print(f"\n{prompts}")
 		
 		if player_input.lower() == 't':
-			if player.position == [(0,0,0)]:
+			if room == main_room:
 				if Friendship_points == 0:
 					print(f"{zero_friendship_talk}")
 				elif Friendship_points == 1:
@@ -84,30 +107,30 @@ def main(player):
 				print("Sorry, there is no one to talk to in this room.")
 				print(f"\n{prompts}")
 
-		if player_input.lower() == 'p':
-			player_input = ("Would you like to pick up the item in this room? (Answer 'y' or 'n')")
-			if player_input.lower() == 'y':
-				pickup()
+		if player_input.lower() == 'z':
+			if room.items:
+				player_input = input(f"Would you like to pick up {room.items[0]}? (Answer 'y' or 'n')\n")
+				if player_input.lower() == 'y':
+					room.pickup(player)
+				else:
+					print(f"\n{prompts}")
 			else:
-				print(f"\n{prompts}")
+				print("There is nothing to pick up.")
 
-		if player_input.lower() == 'n':
+		if player_input.lower() == 'm':
 			room.movement(player)
-		if player_input.lower() == 'e':
-			room.movement(player)
-		if player_input.lower() == 'w':
-			room.movement(player)
-		if player_input.lower() == 'u':
-			room.movement(player)
-		if player_input.lower() == 'd':
-			room.movement(player)
+			room = rooms.get(player.position)
+			print(room.descriptions())
 		
 		if player_input.lower() == 'i':
 			print(player.inventory)
 		
+		if player_input.lower() == 'f':
+			print(f"Friendship points : {Friendship_points}")
+		
 		if player_input.lower() == 'v':
-			if len(room.viewables) > 0:
-				player_input = (f"Would you like to view {room.viewables[0]}? (y or n)\n")
+			if room.viewables:
+				player_input = input(f"Would you like to view {room.viewables[0]}? (y or n)\n")
 				if player_input.lower() == "y":
 					if "computer" in room.viewables:
 						player_input = input("On the computer, a riddle is displayed. It reads as follows:\nWhat is at the beginning of end and is also at the end of time?\n")
@@ -146,7 +169,7 @@ def main(player):
 							room.viewables.remove("painting")
 
 					elif "bookshelf" in room.viewables:
-						player_input = input("You grab the book and open it, inside there is a riddle. It reads as follows:\nHow many months of the year have 28 days?")
+						player_input = input("You grab the book and open it, inside there is a riddle. It reads as follows:\nHow many months of the year have 28 days?\n")
 						if player_input != '12':
 							player_input = input("Hint: 30 > 28")
 							if player_input != '12':
@@ -163,48 +186,66 @@ def main(player):
 							player.inventory.append("upstairs bedroom key")
 							room.viewables.remove("bookshelf")
 				else:
-					print(f"What now?\n{prompts}")
+					print(f"What now? (use 'p' to see prompts)")
 			else:
-				print(f"There is nothing here left to view.\n{prompts}")
+				print(f"There is nothing here to view.")
 
 		if player_input.lower() == 'g':
-			if player.position == [(0,0,0)]:
+			if room == main_room:
 				if player.inventory:
 					print(player.inventory)
-					player_input = input("What item would you like to gift?")
+					player_input = input("What item would you like to gift?\n")
 					if player_input in player.inventory:
 						player.inventory.remove(player_input)
 						if player_input in liked_items:
 							Friendship_points += 1
+							print(f"\n{NPC_name} liked that item! Your friendship with them has increased!")
 						else:
 							Friendship_points -= 1
+							print(f"\nUh oh, {NPC_name} didn't like that item. Your friendship with them has decreased.")
 					else:
 						print("Item not in inventory")
 				else:
 					print("Nothing in inventory")
 
+		if player_input.lower() == 'r':
+			if player.inventory:
+				print(player.inventory)
+				player_input = input("What item would you like to remove?")
+				if player_input in player.inventory:
+					player.inventory.remove(player_input)
+				else:
+					print("Item not in inventory")
+			else:
+				print("Nothing in inventory")
 
 		if Friendship_points < 0:
+			if NPC_name == "Stella":
+				print('''"Uhm, I don't think we can be friends. Sorry. You're just not quite cool enough."''')
+			if NPC_name == "Liam":
+				print('''"... Did you not listen to what I said at all? I can't be friends with someone like you."''')
+			if NPC_name == "Quinn":
+				print('''"Maybe we can be friends... in another life. I don't like you that much."''')
 			you_loser()
 		if Friendship_points > 2:
 			if NPC_name == "Stella":
-				print("OMG thank you so much! You're my best friend! Let's hang out again later!")
+				print('''"OMG thank you so much! You're my best friend! Let's hang out again later!"''')
 			if NPC_name == "Liam":
-				print("I don't know how to thank you enough. You're defintely my best friend, I'll see you around sometime.")
+				print('''"I don't know how to thank you enough. You're defintely my best friend, I'll see you around sometime."''')
 			if NPC_name == "Quinn":
-				print("WOW! You're amazing. Thanks dude! I'll need to get you some gifts next time we see each other!")
+				print('''"WOW! You're amazing. Thanks dude! I'll need to get you some gifts next time we see each other!"''')
 			you_winner()
 
+		def you_loser():
+			print("You lose! Wow, you're bad at making friends... Maybe you should try again!")
+			print("CREDITS:\nProgrammer: Acacia Coombs\nDeveloper: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
+			quit()
 
-
-def you_loser():
-	print("You lose! Wow, you're bad at making friends...")
-	player_input = 'q'
-
-def you_winner():
-	print("You won! You're great at making friends!")
-	print("CREDITS:\nProgrammer: Acacia Coombs\n Developer: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
+		def you_winner():
+			print("You won! You're great at making friends!")
+			print("CREDITS:\nProgrammer: Acacia Coombs\nDeveloper: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
+			quit()
 		
 
-if __name__ == "__main.py__":
+if __name__ == "__main__":
 	main()
