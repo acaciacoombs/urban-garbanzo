@@ -4,14 +4,24 @@ from numpy import array
 
 prompts = "PROMPTS:\np = view prompts\nm = move\nf = look at friendship points\nt = talk to NPC\ng = gift item to NPC\nz = pick up item\ni = view inventory\nr = remove from inventory\nv = view\nq = quit\ns = save\nl = load"
 NPC_name = ''
-Friendship_points = 1
 player_input = ''
 
+def load():
+	global player
+	global rooms
+	try:
+		with open("game.dat",'rb') as f:
+			player = pickle.load(f)
+			rooms = pickle.load(f)
+			print("Game loaded!")
+	except FileNotFoundError:
+		print("Game file not found")
 
 class Player():
 	def __init__(self):
 		self.__position = (0, 0, 0)
 		self.inventory = []
+		self.Friendship_points = 1
 	@property
 	def position(self):
 		return tuple(self.__position)
@@ -24,7 +34,7 @@ player = Player()
 def main():
 	Friendship_points = 1
 	player_input = ''
-	print(f"Hi! Welcome to Friendship Simulator. You win if you get 3 friendship points with the NPC, but you lose if your friendship points go below 0. You start out with 1 friendship point. Good luck!")
+	print(f"Hi! Welcome to Friendship Simulator. You win if you give all the right gifts to the NPC, but you lose if your friendship points go below 0. You start out with 1 friendship point. Good luck!")
 	
 	while player_input != 'q':
 		room = rooms.get(player.position, "Something broke, please quit")
@@ -50,6 +60,7 @@ def main():
 				zero_friendship_talk = f'''"... Oh hi {player_name}. What's up. Did you find my phone yet? I can't add your number if you haven't."'''
 				one_friendship_talk = f'''"Hi {player_name}! I just walked into this stupid abandoned building and I guess I was bored enough to explore, but it's pretty boring. I even lost my phone in one of the rooms!!!"\n'''
 				two_friendship_talk = f'''"HEY {player_name}!!! Thanks so much for the gift! Do you know if there is anything to drink around here? I'm thirsty and I want to make a toast to our new friendship!. Thanks soooo much!"'''
+				three_friendship_talk = f'''"I didn't really want that {player_name}, but that's ok! I'll give you another chance. Just get me a soda or something, I love soda!"'''
 				liked_items = ['phone','soda']
 
 			if NPC_name == 'Quinn':
@@ -57,6 +68,7 @@ def main():
 				zero_friendship_talk = f'''"Hey there. I guess you didn't hear me before but I'm looking for a paintbrush. PAINTBRUSH. I don't want anything else until I have a paintbrush"'''
 				one_friendship_talk = f'''"What's up {player_name}? This abandoned building isn't much, but it's full of cool art! I hope I can find something new to paint with."\n'''
 				two_friendship_talk = f'''"How's it going {player_name}?! These paintbrushes are the best! Thanks for the gift my dude! Now if only I could find something to give my super girly little sister. Maybe there is something in the house!"'''
+				three_friendship_talk = f'''"Hey {player_name}! Did you find a doll or something? There's gotta be one somewhere around here. My little sister really loves dolls!'''
 				liked_items = ['paintbrush','doll']
 
 			if NPC_name == 'Liam':
@@ -64,6 +76,7 @@ def main():
 				zero_friendship_talk = f'''"... Hi {player_name}. Don't give me anything unless it can be used for my computer. Thanks..."'''
 				one_friendship_talk = f'''"Oh. Hi {player_name}. I was just looking for some stuff to use to build my computer. If you find any and you don't want it, maybe you could give it to me. Or not. Doesn't matter."\n'''
 				two_friendship_talk = f'''"Hey {player_name}. I'm looking for a screwdriver. My dad doesn't allow me near his tools anymore and I need one to assemble my new computer. Appreciate it, dude... Ew why did I just say dude."'''
+				three_friendship_talk = f'''"Hi {player_name}, find a screwdriver yet? I really need one to put together my new PC.'''
 				liked_items = ['circuitboard', 'screwdriver']
 			print(f"{one_friendship_talk}")
 	
@@ -97,12 +110,40 @@ def main():
 		
 		if player_input.lower() == 't':
 			if room == main_room:
-				if Friendship_points == 0:
-					print(f"{zero_friendship_talk}")
-				elif Friendship_points == 1:
-					print(f"{one_friendship_talk}")
-				elif Friendship_points == 2:
-					print(f"{two_friendship_talk}")
+				if NPC_name == "Stella":
+					if 'phone' in liked_items:
+						if player.Friendship_points == 0:
+							print(f"{zero_friendship_talk}")
+						elif player.Friendship_points == 1:
+							print(f"{one_friendship_talk}")
+					elif 'soda' in liked_items:
+						if player.Friendship_points == 0 or player.Friendship_points == 1:
+							print(f"{three_friendship_talk}")
+						elif player.Friendship_points == 2:
+							print(f"{two_friendship_talk}")
+				if NPC_name == "Quinn":
+					if 'paintbrush' in liked_items:
+						if player.Friendship_points == 0:
+							print(f"{zero_friendship_talk}")
+						elif player.Friendship_points == 1:
+							print(f"{one_friendship_talk}")
+					elif 'doll' in liked_items:
+						if player.Friendship_points == 0 or player.Friendship_points == 1:
+							print(f"{three_friendship_talk}")
+						elif player.Friendship_points == 2:
+							print(f"{two_friendship_talk}")
+				if NPC_name == "Liam":
+					if 'circuitboard' in liked_items:
+						if player.Friendship_points == 0:
+							print(f"{zero_friendship_talk}")
+						elif player.Friendship_points == 1:
+							print(f"{one_friendship_talk}")
+					elif 'screwdriver' in liked_items:
+						if player.Friendship_points == 0 or player.Friendship_points == 1:
+							print(f"{three_friendship_talk}")
+						elif player.Friendship_points == 2:
+							print(f"{two_friendship_talk}")
+
 			else:
 				print("Sorry, there is no one to talk to in this room.")
 				print(f"\n{prompts}")
@@ -126,7 +167,7 @@ def main():
 			print(player.inventory)
 		
 		if player_input.lower() == 'f':
-			print(f"Friendship points : {Friendship_points}")
+			print(f"Friendship points : {player.Friendship_points}")
 		
 		if player_input.lower() == 'v':
 			if room.viewables:
@@ -198,10 +239,11 @@ def main():
 					if player_input in player.inventory:
 						player.inventory.remove(player_input)
 						if player_input in liked_items:
-							Friendship_points += 1
+							player.Friendship_points += 1
+							liked_items.remove(player_input)
 							print(f"\n{NPC_name} liked that item! Your friendship with them has increased!")
 						else:
-							Friendship_points -= 1
+							player.Friendship_points -= 1
 							print(f"\nUh oh, {NPC_name} didn't like that item. Your friendship with them has decreased.")
 					else:
 						print("Item not in inventory")
@@ -219,7 +261,17 @@ def main():
 			else:
 				print("Nothing in inventory")
 
-		if Friendship_points < 0:
+		if player_input.lower() == 's':
+			with open('game.dat','wb') as f:
+				pickle.dump(player,f)
+				pickle.dump(rooms,f)
+			print("Game saved!")
+
+		if player_input.lower() == 'l':
+			load()
+
+
+		if player.Friendship_points < 0:
 			if NPC_name == "Stella":
 				print('''"Uhm, I don't think we can be friends. Sorry. You're just not quite cool enough."''')
 			if NPC_name == "Liam":
@@ -227,7 +279,8 @@ def main():
 			if NPC_name == "Quinn":
 				print('''"Maybe we can be friends... in another life. I don't like you that much."''')
 			you_loser()
-		if Friendship_points > 2:
+
+		if len(liked_items) == 0:
 			if NPC_name == "Stella":
 				print('''"OMG thank you so much! You're my best friend! Let's hang out again later!"''')
 			if NPC_name == "Liam":
@@ -245,6 +298,8 @@ def main():
 			print("You won! You're great at making friends!")
 			print("CREDITS:\nProgrammer: Acacia Coombs\nDeveloper: Acacia Coombs\nEditor: Acacia Coombs\nThe Best Person Ever: Acacia Coombs\n\nThanks for playing!")
 			quit()
+
+		
 		
 
 if __name__ == "__main__":
