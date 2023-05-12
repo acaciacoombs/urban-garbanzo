@@ -54,7 +54,7 @@ class Room():
 		north_room.allowed_movements.append('up')
 		
 	def lowerroom(self):
-		south_room.allowed_movements.append('d')
+		south_room.allowed_movements.append('down')
 
 
 rooms = {}
@@ -73,7 +73,7 @@ north_room.viewables.append("bookshelf")
 north_room.description[(('phone',),("bookshelf",))] = "North: You enter a study full of thousands of bookshelves and a staircase leading to a locked door. You notice that a lost phone is laying on a desk. However, you notice a book that is slightly sticking out of the bookshelf."
 north_room.description[((),("bookshelf",))] = "North: You enter a study full of thousands of bookshelves and a staircase leading to a locked door. However, you notice a book that is slightly sticking out of the bookshelf."
 north_room.description[((),())] = "North: You enter a study full of thousands of bookshelves and a staircase leading to a door."
-north_room.description[(('phone'),())] = "North: You enter a study full of thousands of bookshelves and a staircase leading to a door. You notice that a lost phone is laying on a desk."
+north_room.description[(('phone',),())] = "North: You enter a study full of thousands of bookshelves and a staircase leading to a door. You notice that a lost phone is laying on a desk."
 rooms[(0,1,0)] = north_room
 
 
@@ -82,7 +82,7 @@ south_room.allowed_movements.append('north')
 south_room.items.append("paintbrush")
 south_room.viewables.append("painting")
 south_room.description[((),())] = "South: You walk into a room filled with pictures and paintings. There is a staircase leading down to a door."
-south_room.description[(('paintbrush'),())] = "South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes. There is a staircase leading down to a door."
+south_room.description[(('paintbrush',),())] = "South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes. There is a staircase leading down to a door."
 south_room.description[(("paintbrush",),('painting',))] = "South: You walk into a room filled with pictures and paintings. Next to one of the paintings is a set of paintbrushes. There is a painting with a strange riddle painted onto it. There is a staircase leading down to a door."
 south_room.description[((),('painting',))] = "South: You walk into a room filled with pictures and paintings. There is a painting with a strange riddle painted onto it. There is a staircase leading down to a door."
 rooms[(0,-1,0)] = south_room
@@ -114,6 +114,6 @@ rooms[(0,1,1)] = upper_room
 lower_room = Room()
 lower_room.allowed_movements.append('up')
 lower_room.items.append('doll',)
-lower_room.description[(("doll"),())] = "Lower: You descend the staircase to a tidy bedroom. There is a doll on the bed."
+lower_room.description[(("doll",),())] = "Lower: You descend the staircase to a tidy bedroom. There is a doll on the bed."
 lower_room.description[((),())] = "Lower: You descend the staircase to a tidy bedroom."
 rooms[(0,-1,-1)] = lower_room
